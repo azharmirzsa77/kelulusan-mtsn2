@@ -1,0 +1,209 @@
+﻿<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kelulusan Online - MTs Negeri 2 Pohuwato</title>
+    <!-- Tailwind CSS v4 via CDN resmi -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .bg-pattern {
+            background-color: #f8fafc;
+            background-image: radial-gradient(#10b981 0.5px, transparent 0.5px), radial-gradient(#10b981 0.5px, #f8fafc 0.5px);
+            background-size: 20px 20px;
+            background-position: 0 0, 10px 10px;
+            background-opacity: 0.05;
+        }
+    </style>
+</head>
+<body class="bg-pattern min-h-screen flex flex-col justify-between text-slate-800">
+
+    <!-- BAGIAN HEADER / KOP MADRASAH -->
+    <header class="bg-emerald-700 text-white shadow-lg py-6 px-4 text-center border-b-4 border-emerald-800">
+        <div class="max-w-4xl mx-auto flex flex-col items-center justify-center gap-2">
+
+            <!-- Elemen Gambar Logo Sekolah -->
+            <div class="mb-2">
+                <img src="logo.png" alt="Logo MTs Negeri 2 Pohuwato"
+                     class="h-20 w-auto object-contain drop-shadow-md"
+                     onerror="this.onerror=null; this.src='https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Seal_of_the_Ministry_of_Religious_Affairs_of_the_Republic_of_Indonesia.svg/320px-Seal_of_the_Ministry_of_Religious_Affairs_of_the_Republic_of_Indonesia.svg.png';">
+            </div>
+
+            <h1 class="text-xl md:text-3xl font-extrabold tracking-wide uppercase">MTs Negeri 2 Pohuwato</h1>
+            <p class="text-xs md:text-base text-emerald-100 font-medium max-w-xl">Sistem Informasi Pengumuman Kelulusan Peserta Didik Kelas IX</p>
+            <span class="bg-emerald-800 text-emerald-200 text-xs font-mono px-3 py-1 rounded-full mt-1">Tahun Pelajaran 2025/2026</span>
+        </div>
+    </header>
+
+    <!-- KONTEN UTAMA APLIKASI (LANGSUNG FORM PENCARIAN) -->
+    <main class="flex-grow flex items-center justify-center p-4 md:p-8">
+
+        <div class="bg-white shadow-2xl rounded-2xl p-6 md:p-8 max-w-md w-full border border-slate-100 transition-all duration-500">
+            <div class="text-center mb-6">
+                <div class="inline-block bg-emerald-50 p-3 rounded-2xl mb-3 text-emerald-600">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </div>
+                <h2 class="text-xl font-bold text-slate-800">Cek Status Kelulusan</h2>
+                <p class="text-xs text-slate-500 mt-1">Masukkan Nomor Induk Siswa Nasional (NISN) resmi Anda</p>
+            </div>
+
+            <!-- Input Form -->
+            <div class="space-y-4">
+                <div class="relative">
+                    <input type="number" id="nisnInput" placeholder="Masukkan 10 Digit NISN"
+                           class="w-full px-4 py-3 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent text-center font-mono text-lg tracking-widest transition"
+                           onkeydown="if(event.key === 'Enter') periksaKelulusan()">
+                </div>
+                <button onclick="periksaKelulusan()"
+                        class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 rounded-xl shadow-md transition transform active:scale-95 cursor-pointer">
+                    Periksa Status Anda
+                </button>
+            </div>
+
+            <!-- AREA HASIL PENCARIAN (Default: Tersembunyi) -->
+            <div id="resultBox" class="hidden mt-8 pt-6 border-t border-dashed border-slate-200">
+                <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider text-center mb-4">Biodata Hasil Pencarian</h3>
+
+                <div class="bg-slate-50 rounded-xl p-4 mb-5 text-sm space-y-2.5 border border-slate-100">
+                    <div class="flex justify-between items-center"><span class="text-slate-500">Nama Siswa:</span> <span id="resNama" class="font-bold text-slate-800 text-right"></span></div>
+                    <div class="flex justify-between items-center"><span class="text-slate-500">NISN:</span> <span id="resNisn" class="font-mono text-slate-800 font-semibold"></span></div>
+                    <div class="flex justify-between items-center"><span class="text-slate-500">Kelas:</span> <span id="resKelas" class="text-slate-800 font-semibold"></span></div>
+                </div>
+
+                <!-- Status Kelulusan -->
+                <div id="statusBadge" class="py-4 px-6 rounded-xl text-xl font-extrabold uppercase tracking-widest text-center shadow-inner"></div>
+
+                <!-- Informasi Tambahan -->
+                <div class="bg-slate-50 rounded-xl p-4 mt-4 border border-slate-100">
+                    <p class="text-xs font-bold text-slate-600 mb-1">Catatan Penting:</p>
+                    <p id="pesanTambahan" class="text-xs text-slate-500 leading-relaxed"></p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- BAGIAN FOOTER -->
+    <footer class="bg-slate-900 text-slate-400 text-center py-4 px-4 text-xs border-t border-slate-800">
+        <p class="font-medium">&copy; 2026 Panitia Kelulusan MTs Negeri 2 Pohuwato.</p>
+        <p class="text-[10px] text-slate-500 mt-0.5">Dikembangkan secara mandiri untuk kemudahan akses informasi wali murid.</p>
+    </footer>
+
+    <!-- LOGIKA JAVASCRIPT APLIKASI -->
+    <script>
+        // ==========================================
+        // DATABASE DATA KELULUSAN SISWA
+        // ==========================================
+        // Ganti baris di bawah ini dengan hasil copy-paste rumus Excel Anda
+        const dataKelulusan = {
+            "0091234567": { "nama": "AHMAD DANI", "kelas": "IX-A", "status": "LULUS" },
+            "0097654321": { "nama": "SITI AMINAH", "kelas": "IX-B", "status": "LULUS" },
+            "0095556667": { "nama": "RIZKY RAMADHAN", "kelas": "IX-C", "status": "DITUNDA" },
+            "0111857736": { "nama": "ABD. RAHIM LASABON", "kelas": "IX-1", "status": "LULUS" },
+            "0108611570": { "nama": "ABUBAKAR TANGAHU", "kelas": "IX-1", "status": "LULUS" },
+            "0114061901": { "nama": "AINUN A. MAPPE", "kelas": "IX-1", "status": "LULUS" },
+            "0096487381": { "nama": "ANDI DAENG MATODJO", "kelas": "IX-1", "status": "LULUS" },
+            "0116387385": { "nama": "APRILYA CAHYANI PAKUDE", "kelas": "IX-1", "status": "LULUS" },
+            "0102950838": { "nama": "ASSYIFAH IDRIS", "kelas": "IX-1", "status": "LULUS" },
+            "3112264875": { "nama": "FAISAL HATAMA", "kelas": "IX-1", "status": "LULUS" },
+            "0117694882": { "nama": "FARDI ADAM", "kelas": "IX-1", "status": "LULUS" },
+            "0106800007": { "nama": "FARHAT F. ALI", "kelas": "IX-1", "status": "LULUS" },
+            "0102319065": { "nama": "LAILATUL QADAR LABUGA", "kelas": "IX-1", "status": "LULUS" },
+            "0103376958": { "nama": "LUTHFIA SAFA MAGFIROH", "kelas": "IX-1", "status": "LULUS" },
+            "0107247619": { "nama": "LUTVIANA BULA", "kelas": "IX-1", "status": "LULUS" },
+            "0105241237": { "nama": "MAHMUD PADUENGO", "kelas": "IX-1", "status": "LULUS" },
+            "0107482990": { "nama": "MIRANDAWATI MOHI", "kelas": "IX-1", "status": "LULUS" },
+            "0109862875": { "nama": "MOH. RIZKI RAMADANI SULEMAN", "kelas": "IX-1", "status": "LULUS" },
+            "3117660953": { "nama": "MOHAMAD DJIBU", "kelas": "IX-1", "status": "LULUS" },
+            "3100087797": { "nama": "MUH. KHAERUL AZAM", "kelas": "IX-1", "status": "LULUS" },
+            "0115705298": { "nama": "MUH. REZKY PAKAYA", "kelas": "IX-1", "status": "LULUS" },
+            "0115614325": { "nama": "MUHAMMAD RIZKY USMAN", "kelas": "IX-1", "status": "LULUS" },
+            "0114979950": { "nama": "NADA LAODE", "kelas": "IX-1", "status": "LULUS" },
+            "0102928031": { "nama": "NOVRIYANTI SULEMAN", "kelas": "IX-1", "status": "LULUS" },
+            "0102842127": { "nama": "NURNEYLA LIMU", "kelas": "IX-1", "status": "LULUS" },
+            "3107562034": { "nama": "NURUL RAMDANI S. BULA", "kelas": "IX-1", "status": "LULUS" },
+            "0104712514": { "nama": "RIZKY PODUNGGE", "kelas": "IX-1", "status": "LULUS" },
+            "0106449791": { "nama": "SILFANA DJURIATI", "kelas": "IX-1", "status": "LULUS" },
+            "0112265938": { "nama": "SISKA TALIB", "kelas": "IX-1", "status": "LULUS" },
+            "0112119601": { "nama": "YUSUF UDAILI", "kelas": "IX-1", "status": "LULUS" },
+            "0117269293": { "nama": "ABDUL ARIP AMRAN", "kelas": "IX-2", "status": "LULUS" },
+            "0106783784": { "nama": "AGHIEL ADRIANSYAH ASMAN", "kelas": "IX-2", "status": "LULUS" },
+            "0103839716": { "nama": "AISYAH TUL JANNA", "kelas": "IX-2", "status": "LULUS" },
+            "0112532312": { "nama": "AKMAL FADHIL PAKAYA", "kelas": "IX-2", "status": "LULUS" },
+            "0107774839": { "nama": "ALDIYANTO MUSA", "kelas": "IX-2", "status": "LULUS" },
+            "0107702762": { "nama": "ALEXA AL HASNI", "kelas": "IX-2", "status": "LULUS" },
+            "0101239267": { "nama": "ATRI MUSTAPA", "kelas": "IX-2", "status": "LULUS" },
+            "0112521101": { "nama": "FAZRIA ULHIKMA DUNGGIO", "kelas": "IX-2", "status": "LULUS" },
+            "0102469809": { "nama": "IBRAHIM LOO", "kelas": "IX-2", "status": "LULUS" },
+            "0106688699": { "nama": "JULFATIR TANGAHU", "kelas": "IX-2", "status": "LULUS" },
+            "0119702637": { "nama": "KHAIRUNNISA ABDJUL", "kelas": "IX-2", "status": "LULUS" },
+            "0109521693": { "nama": "LARAS D. KOMENDANGI", "kelas": "IX-2", "status": "LULUS" },
+            "0105720037": { "nama": "MAHMUD PAKAYA", "kelas": "IX-2", "status": "LULUS" },
+            "0111947906": { "nama": "MOH. ANDIKA ARIF DAIPONTA", "kelas": "IX-2", "status": "LULUS" },
+            "0119533814": { "nama": "NAAILAH APRILYA YUNUS", "kelas": "IX-2", "status": "LULUS" },
+            "0111552644": { "nama": "NAYSA SHAKILA BAKARI", "kelas": "IX-2", "status": "LULUS" },
+            "0107846787": { "nama": "NUR ANISA TANGAHU", "kelas": "IX-2", "status": "LULUS" },
+            "0115640994": { "nama": "NUR FADILA AYUBA", "kelas": "IX-2", "status": "LULUS" },
+            "0111382892": { "nama": "NURILHA SAVANA KIU", "kelas": "IX-2", "status": "LULUS" },
+            "0111162559": { "nama": "RAGHIB PRAYOGA RADJAK", "kelas": "IX-2", "status": "LULUS" },
+            "3120711339": { "nama": "RISKI SAMBITE", "kelas": "IX-2", "status": "LULUS" },
+            "0104230886": { "nama": "RUKIYAT T. SARDIN", "kelas": "IX-2", "status": "LULUS" },
+            "0091444273": { "nama": "SALSABILLA PUTRI NIQMA MOHULANGO", "kelas": "IX-2", "status": "LULUS" },
+            "0119050153": { "nama": "SALWIYA PANJU", "kelas": "IX-2", "status": "LULUS" },
+            "0104980518": { "nama": "SRI NELA HAMZAH", "kelas": "IX-2", "status": "LULUS" },
+            "0101258599": { "nama": "ZAKIYYA OKTAVIANI VURMAN MASANGKA", "kelas": "IX-2", "status": "LULUS" }
+        };
+
+        // ==========================================
+        // FUNGSI PENCARIAN STATUS KELULUSAN
+        // ==========================================
+        function periksaKelulusan() {
+            const inputNisn = document.getElementById("nisnInput").value.trim();
+            const resultBox = document.getElementById("resultBox");
+
+            if (inputNisn === "") {
+                alert("Peringatan: Silahkan isi nomor NISN Anda terlebih dahulu!");
+                return;
+            }
+
+            const siswa = dataKelulusan[inputNisn];
+
+            if (siswa) {
+                document.getElementById("resNama").innerText = siswa.nama;
+                document.getElementById("resNisn").innerText = inputNisn;
+                document.getElementById("resKelas").innerText = siswa.kelas;
+
+                const badge = document.getElementById("statusBadge");
+                const pesan = document.getElementById("pesanTambahan");
+
+                if (siswa.status === "LULUS") {
+                    badge.className = "py-4 px-6 rounded-xl text-xl font-extrabold uppercase tracking-widest text-center shadow-inner bg-emerald-100 text-emerald-800 border border-emerald-300";
+                    badge.innerText = "DNYATAKAN: LULUS";
+                    pesan.innerText = "Selamat atas keberhasilan Anda! Lembar Surat Keterangan Lulus (SKL) resmi dapat diambil di Ruang Tata Usaha (TU) madrasah mulai hari kerja berikutnya dengan seragam batik rapi.";
+                } else if (siswa.status === "DITUNDA") {
+                    badge.className = "py-4 px-6 rounded-xl text-xl font-extrabold uppercase tracking-widest text-center shadow-inner bg-amber-100 text-amber-800 border border-amber-300";
+                    badge.innerText = "STATUS: DITUNDA";
+                    pesan.innerText = "Status kelulusan Anda saat ini sedang ditangguhkan. Diharapkan siswa yang bersangkutan segera menghadap kepada Wali Kelas atau Guru BK bersama orang tua/wali murid pada hari kerja.";
+                } else {
+                    badge.className = "py-4 px-6 rounded-xl text-xl font-extrabold uppercase tracking-widest text-center shadow-inner bg-slate-100 text-slate-700 border border-slate-300";
+                    badge.innerText = siswa.status;
+                    pesan.innerText = "Hubungi pihak administrasi madrasah atau wali kelas untuk mendapatkan informasi lebih lanjut terkait status akun Anda.";
+                }
+
+                resultBox.classList.remove("hidden");
+                resultBox.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                alert("Data NISN tidak ditemukan! Pastikan angka yang Anda masukkan sudah benar. Jika tetap gagal, hubungi wali kelas Anda.");
+                resultBox.classList.add("hidden");
+            }
+        }
+    </script>
+</body>
+</html>
